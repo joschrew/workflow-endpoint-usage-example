@@ -44,9 +44,13 @@ EOF
 ocrd network processing-server my-test-config.yaml -a 0.0.0.0:8080
 ```
 
-4. Run a workflow
+4. Switch back to `workflow-endpoint-usage-example` previously cloned
+
+5. Provide the workspace
+copy the workspace to the data folder so that the mets is available at data/mets.xml
+
+6. Run a workflow
 ```
-# switch back to `workflow-endpoint-usage-example` previously cloned
 curl -v -X POST "localhost:8080/workflow?workspace_path=/data/mets.xml" -H "Content-type: multipart/form-data" -F "workflow=@test-workflow.txt"
 ```
 
