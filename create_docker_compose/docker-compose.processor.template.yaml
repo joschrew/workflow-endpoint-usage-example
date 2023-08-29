@@ -1,0 +1,10 @@
+
+  {{ processor_name }}:
+    image: ocrd/all:maximum
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 {{ processor_name }}
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"

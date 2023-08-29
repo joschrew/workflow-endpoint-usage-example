@@ -1,0 +1,781 @@
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: ${OCRD_PS_MTU}
+
+services:
+  ocrd-processing-server:
+    image: ocrd_all_workflow
+    ports:
+      - ${OCRD_PS_PORT}:8000
+    environment:
+      MONGODB_USER: ${MONGODB_USER:-admin}
+      MONGODB_PASS: ${MONGODB_PASS:-admin}
+      RABBITMQ_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_PASS: ${RABBITMQ_PASS:-admin}
+    command: |
+      /bin/bash -c "echo -e \"
+        process_queue:
+          address: ocrd-rabbitmq
+          port: 5672
+          skip_deployment: true
+          credentials:
+            username: ${RABBITMQ_USER}
+            password: ${RABBITMQ_PASS}
+        database:
+          address: ocrd-mongodb
+          port: 27017
+          skip_deployment: true
+          credentials:
+            username: ${MONGODB_USER}
+            password: ${MONGODB_PASS}
+        hosts: []\" > /ocrd-processing-server-config.yaml && \
+        ocrd network processing-server -a 0.0.0.0:8000 /ocrd-processing-server-config.yaml"
+
+  ocrd-mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASS:-admin}
+    ports:
+      - "27018:27017"
+
+  ocrd-rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-admin}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  ocrd-anybaseocr-binarize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-binarize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-anybaseocr-block-segmentation:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-block-segmentation
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-anybaseocr-crop:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-crop
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-anybaseocr-deskew:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-deskew
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-anybaseocr-dewarp:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-dewarp
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-anybaseocr-layout-analysis:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-layout-analysis
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-anybaseocr-textline:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-textline
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-anybaseocr-tiseg:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-tiseg
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-calamari-recognize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-calamari-recognize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-align:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-align
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-binarize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-binarize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-clip:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-clip
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-denoise:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-denoise
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-deskew:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-deskew
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-dewarp:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-dewarp
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-rec:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-rec
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-recognize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-recognize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-resegment:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-resegment
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-segment:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-segment
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-ocropy-train:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-train
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cis-postcorrect:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-postcorrect
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cor-asv-ann-align:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-align
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cor-asv-ann-evaluate:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-evaluate
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cor-asv-ann-join:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-join
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cor-asv-ann-mark:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-mark
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cor-asv-ann-process:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-process
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-cor-asv-fst-process:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-fst-process
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-detectron2-segment:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-detectron2-segment
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-dinglehopper:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-dinglehopper
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-eynollah-segment:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-eynollah-segment
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-fileformat-transform:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-fileformat-transform
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-im6convert:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-im6convert
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-keraslm-rate:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-keraslm-rate
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-kraken-binarize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-kraken-binarize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-kraken-recognize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-kraken-recognize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-kraken-segment:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-kraken-segment
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-ocropy-segment:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-ocropy-segment
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-olena-binarize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-olena-binarize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-page2tei:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-page2tei
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-pagetopdf:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-pagetopdf
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-pc-segmentation:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-pc-segmentation
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-preprocess-image:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-preprocess-image
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-repair-inconsistencies:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-repair-inconsistencies
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-sbb-binarize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-sbb-binarize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-sbb-textline-detector:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-sbb-textline-detector
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-evaluate:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-evaluate
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-extract-glyphs:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-glyphs
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-extract-lines:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-lines
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-extract-pages:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-pages
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-extract-regions:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-regions
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-extract-words:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-words
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-from-coco:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-from-coco
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-from-masks:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-from-masks
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-project:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-project
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-repair:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-repair
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-replace-original:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-replace-original
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-replace-page:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-replace-page
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-segment-replace-text:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-replace-text
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-skimage-binarize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-skimage-binarize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-skimage-denoise:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-skimage-denoise
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-skimage-denoise-raw:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-skimage-denoise-raw
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-skimage-normalize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-skimage-normalize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-binarize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-binarize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-crop:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-crop
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-deskew:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-deskew
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-fontshape:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-fontshape
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-recognize:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-recognize
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-segment:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-segment-line:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment-line
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-segment-region:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment-region
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-segment-table:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment-table
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-tesserocr-segment-word:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment-word
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
+
+  ocrd-typegroups-classifier:
+    image: ocrd_all_workflow
+    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-typegroups-classifier
+    depends_on:
+      #- ocrd-processing-server
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    volumes:
+      - "$PWD/data:/data"
