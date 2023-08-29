@@ -1,6 +1,6 @@
 This are instructions how to use [the workflow endpoint](https://github.com/OCR-D/core/pull/1083)
 
-1. clone this repo and start containers for example workflow
+1. Clone this repo and start needed containers (mongoDb, rabbitMq, processing-workers)
 ```
 git clone https://github.com/joschrew/workflow-endpoint-usage-example.git
 cd workflow-endpoint-usage-example
@@ -10,7 +10,7 @@ docker build -t ocrd_all_workflow .
 docker-compose up -d ocrd-mongodb ocrd-rabbitmq ocrd-olena-binarize ocrd-anybaseocr-crop ocrd-cis-ocropy-denoise ocrd-tesserocr-segment-region ocrd-segment-repair ocrd-cis-ocropy-clip ocrd-cis-ocropy-segment ocrd-cis-ocropy-dewarp ocrd-tesserocr-recognize
 ```
 
-2. clone and install core to a venv:
+2. Clone and install core to a venv:
 ```
 git clone https://github.com/OCR-D/core.git
 cd core
@@ -44,7 +44,7 @@ EOF
 ocrd network processing-server my-test-config.yaml -a 0.0.0.0:8080
 ```
 
-4. run a workflow
+4. Run a workflow
 ```
 # switch back to `workflow-endpoint-usage-example` previously cloned
 curl -v -X POST "localhost:8080/workflow?workspace_path=/data/mets.xml" -H "Content-type: multipart/form-data" -F "workflow=@test-workflow.txt"
