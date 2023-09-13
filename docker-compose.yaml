@@ -7,8 +7,6 @@ networks:
 services:
   ocrd-processing-server:
     image: ocrd_all_workflow
-    ports:
-      - ${OCRD_PS_PORT}:8000
     environment:
       MONGODB_USER: ${MONGODB_USER:-admin}
       MONGODB_PASS: ${MONGODB_PASS:-admin}
@@ -16,6 +14,7 @@ services:
       RABBITMQ_PASS: ${RABBITMQ_PASS:-admin}
     command: |
       /bin/bash -c "echo -e \"
+        internal_callback_url: http://ocrd-processing-server:8000
         process_queue:
           address: ocrd-rabbitmq
           port: 5672
@@ -32,6 +31,10 @@ services:
             password: ${MONGODB_PASS}
         hosts: []\" > /ocrd-processing-server-config.yaml && \
         ocrd network processing-server -a 0.0.0.0:8000 /ocrd-processing-server-config.yaml"
+    volumes:
+      - "$PWD/data:/data"
+    ports:
+      - ${OCRD_PS_PORT}:8000
 
   ocrd-mongodb:
     image: mongo:latest
@@ -52,7 +55,7 @@ services:
 
   ocrd-anybaseocr-binarize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-binarize
+    command: ocrd-anybaseocr-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -62,7 +65,7 @@ services:
 
   ocrd-anybaseocr-block-segmentation:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-block-segmentation
+    command: ocrd-anybaseocr-block-segmentation worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -72,7 +75,7 @@ services:
 
   ocrd-anybaseocr-crop:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-crop
+    command: ocrd-anybaseocr-crop worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -82,7 +85,7 @@ services:
 
   ocrd-anybaseocr-deskew:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-deskew
+    command: ocrd-anybaseocr-deskew worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -92,7 +95,7 @@ services:
 
   ocrd-anybaseocr-dewarp:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-dewarp
+    command: ocrd-anybaseocr-dewarp worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -102,7 +105,7 @@ services:
 
   ocrd-anybaseocr-layout-analysis:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-layout-analysis
+    command: ocrd-anybaseocr-layout-analysis worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -112,7 +115,7 @@ services:
 
   ocrd-anybaseocr-textline:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-textline
+    command: ocrd-anybaseocr-textline worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -122,7 +125,7 @@ services:
 
   ocrd-anybaseocr-tiseg:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-anybaseocr-tiseg
+    command: ocrd-anybaseocr-tiseg worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -132,7 +135,7 @@ services:
 
   ocrd-calamari-recognize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-calamari-recognize
+    command: ocrd-calamari-recognize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -142,7 +145,7 @@ services:
 
   ocrd-cis-align:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-align
+    command: ocrd-cis-align worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -152,7 +155,7 @@ services:
 
   ocrd-cis-ocropy-binarize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-binarize
+    command: ocrd-cis-ocropy-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -162,7 +165,7 @@ services:
 
   ocrd-cis-ocropy-clip:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-clip
+    command: ocrd-cis-ocropy-clip worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -172,7 +175,7 @@ services:
 
   ocrd-cis-ocropy-denoise:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-denoise
+    command: ocrd-cis-ocropy-denoise worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -182,7 +185,7 @@ services:
 
   ocrd-cis-ocropy-deskew:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-deskew
+    command: ocrd-cis-ocropy-deskew worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -192,7 +195,7 @@ services:
 
   ocrd-cis-ocropy-dewarp:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-dewarp
+    command: ocrd-cis-ocropy-dewarp worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -202,7 +205,7 @@ services:
 
   ocrd-cis-ocropy-rec:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-rec
+    command: ocrd-cis-ocropy-rec worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -212,7 +215,7 @@ services:
 
   ocrd-cis-ocropy-recognize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-recognize
+    command: ocrd-cis-ocropy-recognize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -222,7 +225,7 @@ services:
 
   ocrd-cis-ocropy-resegment:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-resegment
+    command: ocrd-cis-ocropy-resegment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -232,7 +235,7 @@ services:
 
   ocrd-cis-ocropy-segment:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-segment
+    command: ocrd-cis-ocropy-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -242,7 +245,7 @@ services:
 
   ocrd-cis-ocropy-train:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-ocropy-train
+    command: ocrd-cis-ocropy-train worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -252,7 +255,7 @@ services:
 
   ocrd-cis-postcorrect:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cis-postcorrect
+    command: ocrd-cis-postcorrect worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -262,7 +265,7 @@ services:
 
   ocrd-cor-asv-ann-align:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-align
+    command: ocrd-cor-asv-ann-align worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -272,7 +275,7 @@ services:
 
   ocrd-cor-asv-ann-evaluate:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-evaluate
+    command: ocrd-cor-asv-ann-evaluate worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -282,7 +285,7 @@ services:
 
   ocrd-cor-asv-ann-join:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-join
+    command: ocrd-cor-asv-ann-join worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -292,7 +295,7 @@ services:
 
   ocrd-cor-asv-ann-mark:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-mark
+    command: ocrd-cor-asv-ann-mark worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -302,7 +305,7 @@ services:
 
   ocrd-cor-asv-ann-process:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-ann-process
+    command: ocrd-cor-asv-ann-process worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -312,7 +315,7 @@ services:
 
   ocrd-cor-asv-fst-process:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-cor-asv-fst-process
+    command: ocrd-cor-asv-fst-process worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -322,7 +325,7 @@ services:
 
   ocrd-detectron2-segment:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-detectron2-segment
+    command: ocrd-detectron2-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -332,7 +335,7 @@ services:
 
   ocrd-dinglehopper:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-dinglehopper
+    command: ocrd-dinglehopper worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -342,7 +345,7 @@ services:
 
   ocrd-eynollah-segment:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-eynollah-segment
+    command: ocrd-eynollah-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -352,7 +355,7 @@ services:
 
   ocrd-fileformat-transform:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-fileformat-transform
+    command: ocrd-fileformat-transform worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -362,7 +365,7 @@ services:
 
   ocrd-im6convert:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-im6convert
+    command: ocrd-im6convert worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -372,7 +375,7 @@ services:
 
   ocrd-keraslm-rate:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-keraslm-rate
+    command: ocrd-keraslm-rate worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -382,7 +385,7 @@ services:
 
   ocrd-kraken-binarize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-kraken-binarize
+    command: ocrd-kraken-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -392,7 +395,7 @@ services:
 
   ocrd-kraken-recognize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-kraken-recognize
+    command: ocrd-kraken-recognize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -402,7 +405,7 @@ services:
 
   ocrd-kraken-segment:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-kraken-segment
+    command: ocrd-kraken-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -412,7 +415,7 @@ services:
 
   ocrd-ocropy-segment:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-ocropy-segment
+    command: ocrd-ocropy-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -422,7 +425,7 @@ services:
 
   ocrd-olena-binarize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-olena-binarize
+    command: ocrd-olena-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -432,7 +435,7 @@ services:
 
   ocrd-page2tei:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-page2tei
+    command: ocrd-page2tei worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -442,7 +445,7 @@ services:
 
   ocrd-pagetopdf:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-pagetopdf
+    command: ocrd-pagetopdf worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -452,7 +455,7 @@ services:
 
   ocrd-pc-segmentation:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-pc-segmentation
+    command: ocrd-pc-segmentation worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -462,7 +465,7 @@ services:
 
   ocrd-preprocess-image:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-preprocess-image
+    command: ocrd-preprocess-image worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -472,7 +475,7 @@ services:
 
   ocrd-repair-inconsistencies:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-repair-inconsistencies
+    command: ocrd-repair-inconsistencies worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -482,7 +485,7 @@ services:
 
   ocrd-sbb-binarize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-sbb-binarize
+    command: ocrd-sbb-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -492,7 +495,7 @@ services:
 
   ocrd-sbb-textline-detector:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-sbb-textline-detector
+    command: ocrd-sbb-textline-detector worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -502,7 +505,7 @@ services:
 
   ocrd-segment-evaluate:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-evaluate
+    command: ocrd-segment-evaluate worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -512,7 +515,7 @@ services:
 
   ocrd-segment-extract-glyphs:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-glyphs
+    command: ocrd-segment-extract-glyphs worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -522,7 +525,7 @@ services:
 
   ocrd-segment-extract-lines:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-lines
+    command: ocrd-segment-extract-lines worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -532,7 +535,7 @@ services:
 
   ocrd-segment-extract-pages:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-pages
+    command: ocrd-segment-extract-pages worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -542,7 +545,7 @@ services:
 
   ocrd-segment-extract-regions:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-regions
+    command: ocrd-segment-extract-regions worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -552,7 +555,7 @@ services:
 
   ocrd-segment-extract-words:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-extract-words
+    command: ocrd-segment-extract-words worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -562,7 +565,7 @@ services:
 
   ocrd-segment-from-coco:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-from-coco
+    command: ocrd-segment-from-coco worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -572,7 +575,7 @@ services:
 
   ocrd-segment-from-masks:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-from-masks
+    command: ocrd-segment-from-masks worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -582,7 +585,7 @@ services:
 
   ocrd-segment-project:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-project
+    command: ocrd-segment-project worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -592,7 +595,7 @@ services:
 
   ocrd-segment-repair:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-repair
+    command: ocrd-segment-repair worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -602,7 +605,7 @@ services:
 
   ocrd-segment-replace-original:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-replace-original
+    command: ocrd-segment-replace-original worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -612,7 +615,7 @@ services:
 
   ocrd-segment-replace-page:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-replace-page
+    command: ocrd-segment-replace-page worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -622,7 +625,7 @@ services:
 
   ocrd-segment-replace-text:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-segment-replace-text
+    command: ocrd-segment-replace-text worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -632,7 +635,7 @@ services:
 
   ocrd-skimage-binarize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-skimage-binarize
+    command: ocrd-skimage-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -642,7 +645,7 @@ services:
 
   ocrd-skimage-denoise:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-skimage-denoise
+    command: ocrd-skimage-denoise worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -652,7 +655,7 @@ services:
 
   ocrd-skimage-denoise-raw:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-skimage-denoise-raw
+    command: ocrd-skimage-denoise-raw worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -662,7 +665,7 @@ services:
 
   ocrd-skimage-normalize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-skimage-normalize
+    command: ocrd-skimage-normalize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -672,7 +675,7 @@ services:
 
   ocrd-tesserocr-binarize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-binarize
+    command: ocrd-tesserocr-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -682,7 +685,7 @@ services:
 
   ocrd-tesserocr-crop:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-crop
+    command: ocrd-tesserocr-crop worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -692,7 +695,7 @@ services:
 
   ocrd-tesserocr-deskew:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-deskew
+    command: ocrd-tesserocr-deskew worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -702,7 +705,7 @@ services:
 
   ocrd-tesserocr-fontshape:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-fontshape
+    command: ocrd-tesserocr-fontshape worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -712,7 +715,7 @@ services:
 
   ocrd-tesserocr-recognize:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-recognize
+    command: ocrd-tesserocr-recognize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -722,7 +725,7 @@ services:
 
   ocrd-tesserocr-segment:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment
+    command: ocrd-tesserocr-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -732,7 +735,7 @@ services:
 
   ocrd-tesserocr-segment-line:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment-line
+    command: ocrd-tesserocr-segment-line worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -742,7 +745,7 @@ services:
 
   ocrd-tesserocr-segment-region:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment-region
+    command: ocrd-tesserocr-segment-region worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -752,7 +755,7 @@ services:
 
   ocrd-tesserocr-segment-table:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment-table
+    command: ocrd-tesserocr-segment-table worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -762,7 +765,7 @@ services:
 
   ocrd-tesserocr-segment-word:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-tesserocr-segment-word
+    command: ocrd-tesserocr-segment-word worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
@@ -772,7 +775,7 @@ services:
 
   ocrd-typegroups-classifier:
     image: ocrd_all_workflow
-    command: ocrd network processing-worker --database $MONGODB_URL --queue $RABBITMQ_URL --create-queue --queue-connect-attempts 5 ocrd-typegroups-classifier
+    command: ocrd-typegroups-classifier worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
       - ocrd-mongodb
