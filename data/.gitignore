@@ -1,0 +1,6 @@
+# data/ is used to provide the workspace to the containers
+
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
