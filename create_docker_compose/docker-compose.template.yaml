@@ -7,8 +7,6 @@ networks:
 services:
   ocrd-processing-server:
     image: ocrd/all:maximum
-    ports:
-      - ${OCRD_PS_PORT}:8000
     environment:
       MONGODB_USER: ${MONGODB_USER:-admin}
       MONGODB_PASS: ${MONGODB_PASS:-admin}
@@ -16,6 +14,7 @@ services:
       RABBITMQ_PASS: ${RABBITMQ_PASS:-admin}
     command: |
       /bin/bash -c "echo -e \"
+        internal_callback_url: http://ocrd-processing-server:8000
         process_queue:
           address: ocrd-rabbitmq
           port: 5672
@@ -32,6 +31,10 @@ services:
             password: ${MONGODB_PASS}
         hosts: []\" > /ocrd-processing-server-config.yaml && \
         ocrd network processing-server -a 0.0.0.0:8000 /ocrd-processing-server-config.yaml"
+    volumes:
+      - "$PWD/data:/data"
+    ports:
+      - ${OCRD_PS_PORT}:8000
 
   ocrd-mongodb:
     image: mongo:latest
