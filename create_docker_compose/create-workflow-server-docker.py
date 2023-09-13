@@ -57,7 +57,7 @@ def dc_workers() -> str:
         template = template.replace("ocrd/all:maximum", IMAGE_NAME)
 
     for p in processors:
-        res += re.sub(r"{{[\s*]processor_name[\s*]}}", p, template)
+        res += re.sub(r"{{[\s]*processor_name[\s]*}}", p, template)
     return res
 
 
