@@ -33,6 +33,7 @@ services:
         ocrd network processing-server -a 0.0.0.0:8000 /ocrd-processing-server-config.yaml"
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
     ports:
       - ${OCRD_PS_PORT}:8000
 

@@ -8,3 +8,4 @@
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"

@@ -33,6 +33,7 @@ services:
         ocrd network processing-server -a 0.0.0.0:8000 /ocrd-processing-server-config.yaml"
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
     ports:
       - ${OCRD_PS_PORT}:8000
 
@@ -62,6 +63,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-anybaseocr-block-segmentation:
     image: ocrd_all_workflow
@@ -72,6 +74,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-anybaseocr-crop:
     image: ocrd_all_workflow
@@ -82,6 +85,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-anybaseocr-deskew:
     image: ocrd_all_workflow
@@ -92,6 +96,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-anybaseocr-dewarp:
     image: ocrd_all_workflow
@@ -102,6 +107,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-anybaseocr-layout-analysis:
     image: ocrd_all_workflow
@@ -112,6 +118,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-anybaseocr-textline:
     image: ocrd_all_workflow
@@ -122,6 +129,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-anybaseocr-tiseg:
     image: ocrd_all_workflow
@@ -132,6 +140,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-calamari-recognize:
     image: ocrd_all_workflow
@@ -142,6 +151,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-align:
     image: ocrd_all_workflow
@@ -152,6 +162,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-binarize:
     image: ocrd_all_workflow
@@ -162,6 +173,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-clip:
     image: ocrd_all_workflow
@@ -172,6 +184,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-denoise:
     image: ocrd_all_workflow
@@ -182,6 +195,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-deskew:
     image: ocrd_all_workflow
@@ -192,6 +206,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-dewarp:
     image: ocrd_all_workflow
@@ -202,6 +217,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-rec:
     image: ocrd_all_workflow
@@ -212,6 +228,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-recognize:
     image: ocrd_all_workflow
@@ -222,6 +239,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-resegment:
     image: ocrd_all_workflow
@@ -232,6 +250,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-segment:
     image: ocrd_all_workflow
@@ -242,6 +261,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-ocropy-train:
     image: ocrd_all_workflow
@@ -252,6 +272,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cis-postcorrect:
     image: ocrd_all_workflow
@@ -262,6 +283,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cor-asv-ann-align:
     image: ocrd_all_workflow
@@ -272,6 +294,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cor-asv-ann-evaluate:
     image: ocrd_all_workflow
@@ -282,6 +305,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cor-asv-ann-join:
     image: ocrd_all_workflow
@@ -292,6 +316,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cor-asv-ann-mark:
     image: ocrd_all_workflow
@@ -302,6 +327,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cor-asv-ann-process:
     image: ocrd_all_workflow
@@ -312,6 +338,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-cor-asv-fst-process:
     image: ocrd_all_workflow
@@ -322,6 +349,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-detectron2-segment:
     image: ocrd_all_workflow
@@ -332,6 +360,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-dinglehopper:
     image: ocrd_all_workflow
@@ -342,6 +371,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-eynollah-segment:
     image: ocrd_all_workflow
@@ -352,6 +382,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-fileformat-transform:
     image: ocrd_all_workflow
@@ -362,6 +393,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-im6convert:
     image: ocrd_all_workflow
@@ -372,6 +404,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-keraslm-rate:
     image: ocrd_all_workflow
@@ -382,6 +415,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-kraken-binarize:
     image: ocrd_all_workflow
@@ -392,6 +426,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-kraken-recognize:
     image: ocrd_all_workflow
@@ -402,6 +437,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-kraken-segment:
     image: ocrd_all_workflow
@@ -412,6 +448,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-ocropy-segment:
     image: ocrd_all_workflow
@@ -422,6 +459,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-olena-binarize:
     image: ocrd_all_workflow
@@ -432,6 +470,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-page2tei:
     image: ocrd_all_workflow
@@ -442,6 +481,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-pagetopdf:
     image: ocrd_all_workflow
@@ -452,6 +492,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-pc-segmentation:
     image: ocrd_all_workflow
@@ -462,6 +503,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-preprocess-image:
     image: ocrd_all_workflow
@@ -472,6 +514,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-repair-inconsistencies:
     image: ocrd_all_workflow
@@ -482,6 +525,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-sbb-binarize:
     image: ocrd_all_workflow
@@ -492,6 +536,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-sbb-textline-detector:
     image: ocrd_all_workflow
@@ -502,6 +547,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-evaluate:
     image: ocrd_all_workflow
@@ -512,6 +558,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-extract-glyphs:
     image: ocrd_all_workflow
@@ -522,6 +569,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-extract-lines:
     image: ocrd_all_workflow
@@ -532,6 +580,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-extract-pages:
     image: ocrd_all_workflow
@@ -542,6 +591,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-extract-regions:
     image: ocrd_all_workflow
@@ -552,6 +602,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-extract-words:
     image: ocrd_all_workflow
@@ -562,6 +613,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-from-coco:
     image: ocrd_all_workflow
@@ -572,6 +624,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-from-masks:
     image: ocrd_all_workflow
@@ -582,6 +635,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-project:
     image: ocrd_all_workflow
@@ -592,6 +646,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-repair:
     image: ocrd_all_workflow
@@ -602,6 +657,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-replace-original:
     image: ocrd_all_workflow
@@ -612,6 +668,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-replace-page:
     image: ocrd_all_workflow
@@ -622,6 +679,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-segment-replace-text:
     image: ocrd_all_workflow
@@ -632,6 +690,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-skimage-binarize:
     image: ocrd_all_workflow
@@ -642,6 +701,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-skimage-denoise:
     image: ocrd_all_workflow
@@ -652,6 +712,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-skimage-denoise-raw:
     image: ocrd_all_workflow
@@ -662,6 +723,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-skimage-normalize:
     image: ocrd_all_workflow
@@ -672,6 +734,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-binarize:
     image: ocrd_all_workflow
@@ -682,6 +745,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-crop:
     image: ocrd_all_workflow
@@ -692,6 +756,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-deskew:
     image: ocrd_all_workflow
@@ -702,6 +767,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-fontshape:
     image: ocrd_all_workflow
@@ -712,6 +778,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-recognize:
     image: ocrd_all_workflow
@@ -722,6 +789,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-segment:
     image: ocrd_all_workflow
@@ -732,6 +800,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-segment-line:
     image: ocrd_all_workflow
@@ -742,6 +811,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-segment-region:
     image: ocrd_all_workflow
@@ -752,6 +822,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-segment-table:
     image: ocrd_all_workflow
@@ -762,6 +833,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-tesserocr-segment-word:
     image: ocrd_all_workflow
@@ -772,6 +844,7 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
 
   ocrd-typegroups-classifier:
     image: ocrd_all_workflow
@@ -782,3 +855,4 @@ services:
       - ocrd-rabbitmq
     volumes:
       - "$PWD/data:/data"
+      - "$PWD/tmp:/tmp"
