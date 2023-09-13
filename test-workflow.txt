@@ -1,9 +1,9 @@
-olena-binarize           -I OCR-D-IMG                 -O OCR-D-BINPAGE
+cis-ocropy-binarize      -I OCR-D-IMG                 -O OCR-D-BINPAGE
 anybaseocr-crop          -I OCR-D-BINPAGE             -O OCR-D-SEG-PAGE-ANYOCR
-cis-ocropy-denoise       -I OCR-D-SEG-PAGE-ANYOCR     -O OCR-D-DENOISE-OCROPY      -P dpi 300           -P level-of-operation page            -P noise_maxsize 3.0
-tesserocr-segment-region -I OCR-D-DENOISE-OCROPY      -O OCR-D-SEG-BLOCK-TESSERACT -P padding 5         -P find_tables false                  -P dpi 300
-segment-repair           -I OCR-D-SEG-BLOCK-TESSERACT -O OCR-D-SEGMENT-REPAIR      -P plausibilize true -P plausibilize_merge_min_overlap 0.7
+cis-ocropy-denoise       -I OCR-D-SEG-PAGE-ANYOCR     -O OCR-D-DENOISE-OCROPY      -P dpi 300              -P level-of-operation page            -P noise_maxsize 3.0
+tesserocr-segment-region -I OCR-D-DENOISE-OCROPY      -O OCR-D-SEG-BLOCK-TESSERACT -P padding 5            -P find_tables false                  -P dpi 300
+segment-repair           -I OCR-D-SEG-BLOCK-TESSERACT -O OCR-D-SEGMENT-REPAIR      -P plausibilize true    -P plausibilize_merge_min_overlap 0.7
 cis-ocropy-clip          -I OCR-D-SEGMENT-REPAIR      -O OCR-D-CLIP
-cis-ocropy-segment       -I OCR-D-CLIP                -O OCR-D-SEGMENT-OCROPY      -P spread 2.4        -P dpi 300
+cis-ocropy-segment       -I OCR-D-CLIP                -O OCR-D-SEGMENT-OCROPY      -P spread 2.4           -P dpi 300
 cis-ocropy-dewarp        -I OCR-D-SEGMENT-OCROPY      -O OCR-D-DEWARP
-tesserocr-recognize      -I OCR-D-DEWARP              -O PAGE                      -P textequiv_level word
+tesserocr-recognize      -I OCR-D-DEWARP              -O PAGE                      -P textequiv_level word -P model Fraktur
