@@ -30,8 +30,9 @@ services:
           credentials:
             username: ${MONGODB_USER}
             password: ${MONGODB_PASS}
-        hosts: []\" > /ocrd-processing-server-config.yaml && \
-        ocrd network processing-server -a 0.0.0.0:8000 /ocrd-processing-server-config.yaml"
+        hosts: []\" > /data/ocrd-processing-server-config.yaml && \
+        ocrd network processing-server -a 0.0.0.0:8000 /data/ocrd-processing-server-config.yaml"
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -65,6 +66,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -77,6 +79,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -89,6 +92,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -101,6 +105,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -113,6 +118,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -125,6 +131,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -137,6 +144,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -149,6 +157,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -161,6 +170,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -173,6 +183,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -185,6 +196,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -197,6 +209,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -209,6 +222,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -221,6 +235,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -233,6 +248,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -245,6 +261,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -257,6 +274,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -269,6 +287,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -281,6 +300,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -293,6 +313,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -305,6 +326,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -317,6 +339,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -329,6 +352,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -341,6 +365,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -353,6 +378,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -365,6 +391,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -377,6 +404,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -389,6 +417,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -401,6 +430,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -413,6 +443,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -425,6 +456,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -437,6 +469,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -449,6 +482,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -461,6 +495,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -473,6 +508,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -485,6 +521,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -497,6 +534,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -509,6 +547,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -521,6 +560,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -533,6 +573,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -545,6 +586,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -557,6 +599,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -569,6 +612,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -581,6 +625,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -593,6 +638,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -605,6 +651,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -617,6 +664,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -629,6 +677,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -641,6 +690,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -653,6 +703,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -665,6 +716,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -677,6 +729,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -689,6 +742,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -701,6 +755,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -713,6 +768,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -725,6 +781,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -737,6 +794,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -749,6 +807,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -761,6 +820,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -773,6 +833,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -785,6 +846,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -797,6 +859,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -809,6 +872,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -821,6 +885,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -833,6 +898,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -845,6 +911,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -857,6 +924,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -869,6 +937,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -881,6 +950,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -893,6 +963,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -905,6 +976,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -917,6 +989,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
@@ -929,6 +1002,7 @@ services:
       #- ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
       - "$PWD/tmp:/tmp"
