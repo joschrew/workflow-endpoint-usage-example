@@ -6,6 +6,7 @@ networks:
 
 services:
   ocrd-processing-server:
+    container_name: ocrd-processing-server
     image: ocrd_all_workflow
     environment:
       MONGODB_USER: ${MONGODB_USER:-admin}
@@ -38,6 +39,7 @@ services:
       - ${OCRD_PS_PORT}:8000
 
   ocrd-mongodb:
+    container_name: ocrd-mongodb
     image: mongo:latest
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER:-admin}
@@ -46,6 +48,7 @@ services:
       - "27018:27017"
 
   ocrd-rabbitmq:
+    container_name: ocrd-rabbitmq
     image: rabbitmq:3-management
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
@@ -56,6 +59,7 @@ services:
 
   ocrd-anybaseocr-binarize:
     image: ocrd_all_workflow
+    container_name: ocrd-anybaseocr-binarize
     command: ocrd-anybaseocr-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -67,6 +71,7 @@ services:
 
   ocrd-anybaseocr-block-segmentation:
     image: ocrd_all_workflow
+    container_name: ocrd-anybaseocr-block-segmentation
     command: ocrd-anybaseocr-block-segmentation worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -78,6 +83,7 @@ services:
 
   ocrd-anybaseocr-crop:
     image: ocrd_all_workflow
+    container_name: ocrd-anybaseocr-crop
     command: ocrd-anybaseocr-crop worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -89,6 +95,7 @@ services:
 
   ocrd-anybaseocr-deskew:
     image: ocrd_all_workflow
+    container_name: ocrd-anybaseocr-deskew
     command: ocrd-anybaseocr-deskew worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -100,6 +107,7 @@ services:
 
   ocrd-anybaseocr-dewarp:
     image: ocrd_all_workflow
+    container_name: ocrd-anybaseocr-dewarp
     command: ocrd-anybaseocr-dewarp worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -111,6 +119,7 @@ services:
 
   ocrd-anybaseocr-layout-analysis:
     image: ocrd_all_workflow
+    container_name: ocrd-anybaseocr-layout-analysis
     command: ocrd-anybaseocr-layout-analysis worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -122,6 +131,7 @@ services:
 
   ocrd-anybaseocr-textline:
     image: ocrd_all_workflow
+    container_name: ocrd-anybaseocr-textline
     command: ocrd-anybaseocr-textline worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -133,6 +143,7 @@ services:
 
   ocrd-anybaseocr-tiseg:
     image: ocrd_all_workflow
+    container_name: ocrd-anybaseocr-tiseg
     command: ocrd-anybaseocr-tiseg worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -144,6 +155,7 @@ services:
 
   ocrd-calamari-recognize:
     image: ocrd_all_workflow
+    container_name: ocrd-calamari-recognize
     command: ocrd-calamari-recognize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -155,6 +167,7 @@ services:
 
   ocrd-cis-align:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-align
     command: ocrd-cis-align worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -166,6 +179,7 @@ services:
 
   ocrd-cis-ocropy-binarize:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-binarize
     command: ocrd-cis-ocropy-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -177,6 +191,7 @@ services:
 
   ocrd-cis-ocropy-clip:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-clip
     command: ocrd-cis-ocropy-clip worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -188,6 +203,7 @@ services:
 
   ocrd-cis-ocropy-denoise:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-denoise
     command: ocrd-cis-ocropy-denoise worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -199,6 +215,7 @@ services:
 
   ocrd-cis-ocropy-deskew:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-deskew
     command: ocrd-cis-ocropy-deskew worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -210,6 +227,7 @@ services:
 
   ocrd-cis-ocropy-dewarp:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-dewarp
     command: ocrd-cis-ocropy-dewarp worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -221,6 +239,7 @@ services:
 
   ocrd-cis-ocropy-rec:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-rec
     command: ocrd-cis-ocropy-rec worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -232,6 +251,7 @@ services:
 
   ocrd-cis-ocropy-recognize:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-recognize
     command: ocrd-cis-ocropy-recognize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -243,6 +263,7 @@ services:
 
   ocrd-cis-ocropy-resegment:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-resegment
     command: ocrd-cis-ocropy-resegment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -254,6 +275,7 @@ services:
 
   ocrd-cis-ocropy-segment:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-segment
     command: ocrd-cis-ocropy-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -265,6 +287,7 @@ services:
 
   ocrd-cis-ocropy-train:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-ocropy-train
     command: ocrd-cis-ocropy-train worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -276,6 +299,7 @@ services:
 
   ocrd-cis-postcorrect:
     image: ocrd_all_workflow
+    container_name: ocrd-cis-postcorrect
     command: ocrd-cis-postcorrect worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -287,6 +311,7 @@ services:
 
   ocrd-cor-asv-ann-align:
     image: ocrd_all_workflow
+    container_name: ocrd-cor-asv-ann-align
     command: ocrd-cor-asv-ann-align worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -298,6 +323,7 @@ services:
 
   ocrd-cor-asv-ann-evaluate:
     image: ocrd_all_workflow
+    container_name: ocrd-cor-asv-ann-evaluate
     command: ocrd-cor-asv-ann-evaluate worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -309,6 +335,7 @@ services:
 
   ocrd-cor-asv-ann-join:
     image: ocrd_all_workflow
+    container_name: ocrd-cor-asv-ann-join
     command: ocrd-cor-asv-ann-join worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -320,6 +347,7 @@ services:
 
   ocrd-cor-asv-ann-mark:
     image: ocrd_all_workflow
+    container_name: ocrd-cor-asv-ann-mark
     command: ocrd-cor-asv-ann-mark worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -331,6 +359,7 @@ services:
 
   ocrd-cor-asv-ann-process:
     image: ocrd_all_workflow
+    container_name: ocrd-cor-asv-ann-process
     command: ocrd-cor-asv-ann-process worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -342,6 +371,7 @@ services:
 
   ocrd-cor-asv-fst-process:
     image: ocrd_all_workflow
+    container_name: ocrd-cor-asv-fst-process
     command: ocrd-cor-asv-fst-process worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -353,6 +383,7 @@ services:
 
   ocrd-detectron2-segment:
     image: ocrd_all_workflow
+    container_name: ocrd-detectron2-segment
     command: ocrd-detectron2-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -364,6 +395,7 @@ services:
 
   ocrd-dinglehopper:
     image: ocrd_all_workflow
+    container_name: ocrd-dinglehopper
     command: ocrd-dinglehopper worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -375,6 +407,7 @@ services:
 
   ocrd-eynollah-segment:
     image: ocrd_all_workflow
+    container_name: ocrd-eynollah-segment
     command: ocrd-eynollah-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -386,6 +419,7 @@ services:
 
   ocrd-fileformat-transform:
     image: ocrd_all_workflow
+    container_name: ocrd-fileformat-transform
     command: ocrd-fileformat-transform worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -397,6 +431,7 @@ services:
 
   ocrd-im6convert:
     image: ocrd_all_workflow
+    container_name: ocrd-im6convert
     command: ocrd-im6convert worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -408,6 +443,7 @@ services:
 
   ocrd-keraslm-rate:
     image: ocrd_all_workflow
+    container_name: ocrd-keraslm-rate
     command: ocrd-keraslm-rate worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -419,6 +455,7 @@ services:
 
   ocrd-kraken-binarize:
     image: ocrd_all_workflow
+    container_name: ocrd-kraken-binarize
     command: ocrd-kraken-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -430,6 +467,7 @@ services:
 
   ocrd-kraken-recognize:
     image: ocrd_all_workflow
+    container_name: ocrd-kraken-recognize
     command: ocrd-kraken-recognize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -441,6 +479,7 @@ services:
 
   ocrd-kraken-segment:
     image: ocrd_all_workflow
+    container_name: ocrd-kraken-segment
     command: ocrd-kraken-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -452,6 +491,7 @@ services:
 
   ocrd-ocropy-segment:
     image: ocrd_all_workflow
+    container_name: ocrd-ocropy-segment
     command: ocrd-ocropy-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -463,6 +503,7 @@ services:
 
   ocrd-olena-binarize:
     image: ocrd_all_workflow
+    container_name: ocrd-olena-binarize
     command: ocrd-olena-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -474,6 +515,7 @@ services:
 
   ocrd-page2tei:
     image: ocrd_all_workflow
+    container_name: ocrd-page2tei
     command: ocrd-page2tei worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -485,6 +527,7 @@ services:
 
   ocrd-pagetopdf:
     image: ocrd_all_workflow
+    container_name: ocrd-pagetopdf
     command: ocrd-pagetopdf worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -496,6 +539,7 @@ services:
 
   ocrd-pc-segmentation:
     image: ocrd_all_workflow
+    container_name: ocrd-pc-segmentation
     command: ocrd-pc-segmentation worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -507,6 +551,7 @@ services:
 
   ocrd-preprocess-image:
     image: ocrd_all_workflow
+    container_name: ocrd-preprocess-image
     command: ocrd-preprocess-image worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -518,6 +563,7 @@ services:
 
   ocrd-repair-inconsistencies:
     image: ocrd_all_workflow
+    container_name: ocrd-repair-inconsistencies
     command: ocrd-repair-inconsistencies worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -529,6 +575,7 @@ services:
 
   ocrd-sbb-binarize:
     image: ocrd_all_workflow
+    container_name: ocrd-sbb-binarize
     command: ocrd-sbb-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -540,6 +587,7 @@ services:
 
   ocrd-sbb-textline-detector:
     image: ocrd_all_workflow
+    container_name: ocrd-sbb-textline-detector
     command: ocrd-sbb-textline-detector worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -551,6 +599,7 @@ services:
 
   ocrd-segment-evaluate:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-evaluate
     command: ocrd-segment-evaluate worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -562,6 +611,7 @@ services:
 
   ocrd-segment-extract-glyphs:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-extract-glyphs
     command: ocrd-segment-extract-glyphs worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -573,6 +623,7 @@ services:
 
   ocrd-segment-extract-lines:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-extract-lines
     command: ocrd-segment-extract-lines worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -584,6 +635,7 @@ services:
 
   ocrd-segment-extract-pages:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-extract-pages
     command: ocrd-segment-extract-pages worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -595,6 +647,7 @@ services:
 
   ocrd-segment-extract-regions:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-extract-regions
     command: ocrd-segment-extract-regions worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -606,6 +659,7 @@ services:
 
   ocrd-segment-extract-words:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-extract-words
     command: ocrd-segment-extract-words worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -617,6 +671,7 @@ services:
 
   ocrd-segment-from-coco:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-from-coco
     command: ocrd-segment-from-coco worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -628,6 +683,7 @@ services:
 
   ocrd-segment-from-masks:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-from-masks
     command: ocrd-segment-from-masks worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -639,6 +695,7 @@ services:
 
   ocrd-segment-project:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-project
     command: ocrd-segment-project worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -650,6 +707,7 @@ services:
 
   ocrd-segment-repair:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-repair
     command: ocrd-segment-repair worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -661,6 +719,7 @@ services:
 
   ocrd-segment-replace-original:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-replace-original
     command: ocrd-segment-replace-original worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -672,6 +731,7 @@ services:
 
   ocrd-segment-replace-page:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-replace-page
     command: ocrd-segment-replace-page worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -683,6 +743,7 @@ services:
 
   ocrd-segment-replace-text:
     image: ocrd_all_workflow
+    container_name: ocrd-segment-replace-text
     command: ocrd-segment-replace-text worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -694,6 +755,7 @@ services:
 
   ocrd-skimage-binarize:
     image: ocrd_all_workflow
+    container_name: ocrd-skimage-binarize
     command: ocrd-skimage-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -705,6 +767,7 @@ services:
 
   ocrd-skimage-denoise:
     image: ocrd_all_workflow
+    container_name: ocrd-skimage-denoise
     command: ocrd-skimage-denoise worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -716,6 +779,7 @@ services:
 
   ocrd-skimage-denoise-raw:
     image: ocrd_all_workflow
+    container_name: ocrd-skimage-denoise-raw
     command: ocrd-skimage-denoise-raw worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -727,6 +791,7 @@ services:
 
   ocrd-skimage-normalize:
     image: ocrd_all_workflow
+    container_name: ocrd-skimage-normalize
     command: ocrd-skimage-normalize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -738,6 +803,7 @@ services:
 
   ocrd-tesserocr-binarize:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-binarize
     command: ocrd-tesserocr-binarize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -749,6 +815,7 @@ services:
 
   ocrd-tesserocr-crop:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-crop
     command: ocrd-tesserocr-crop worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -760,6 +827,7 @@ services:
 
   ocrd-tesserocr-deskew:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-deskew
     command: ocrd-tesserocr-deskew worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -771,6 +839,7 @@ services:
 
   ocrd-tesserocr-fontshape:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-fontshape
     command: ocrd-tesserocr-fontshape worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -782,6 +851,7 @@ services:
 
   ocrd-tesserocr-recognize:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-recognize
     command: ocrd-tesserocr-recognize worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -793,6 +863,7 @@ services:
 
   ocrd-tesserocr-segment:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-segment
     command: ocrd-tesserocr-segment worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -804,6 +875,7 @@ services:
 
   ocrd-tesserocr-segment-line:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-segment-line
     command: ocrd-tesserocr-segment-line worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -815,6 +887,7 @@ services:
 
   ocrd-tesserocr-segment-region:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-segment-region
     command: ocrd-tesserocr-segment-region worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -826,6 +899,7 @@ services:
 
   ocrd-tesserocr-segment-table:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-segment-table
     command: ocrd-tesserocr-segment-table worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -837,6 +911,7 @@ services:
 
   ocrd-tesserocr-segment-word:
     image: ocrd_all_workflow
+    container_name: ocrd-tesserocr-segment-word
     command: ocrd-tesserocr-segment-word worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
@@ -848,6 +923,7 @@ services:
 
   ocrd-typegroups-classifier:
     image: ocrd_all_workflow
+    container_name: ocrd-typegroups-classifier
     command: ocrd-typegroups-classifier worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
       #- ocrd-processing-server
