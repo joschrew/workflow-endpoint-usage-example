@@ -15,6 +15,6 @@ copy the workspace to the data folder so that the mets is available at data/mets
 
 3. Run a workflow
 ```
-curl -v -X POST "localhost:8000/workflow?mets_path=/data/mets.xml" -H "Content-type: multipart/form-data" -F "workflow=@test-workflow.txt"
+curl -v -X POST "localhost:8000/workflow?mets_path=/data/mets.xml&page_wise=True" -H "Content-type: multipart/form-data" -F "workflow=@test-workflow.txt"
 ```
 
