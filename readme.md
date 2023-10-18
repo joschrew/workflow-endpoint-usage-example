@@ -6,7 +6,6 @@ git clone https://github.com/joschrew/workflow-endpoint-usage-example.git
 cd workflow-endpoint-usage-example
 # It is assumed ocrd/all:maximum is already there otherwise: docker pull ocrd/all:maximum
 # the `data`-directory is used for providing the workspace to all processing-workers
-docker build -t ocrd_all_workflow .
 docker-compose up -d ocrd-processing-server ocrd-mongodb ocrd-rabbitmq ocrd-cis-ocropy-binarize ocrd-anybaseocr-crop ocrd-cis-ocropy-denoise ocrd-tesserocr-segment-region ocrd-segment-repair ocrd-cis-ocropy-clip ocrd-cis-ocropy-segment ocrd-cis-ocropy-dewarp ocrd-tesserocr-recognize
 ```
 

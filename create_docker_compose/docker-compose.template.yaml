@@ -9,10 +9,12 @@ services:
     container_name: ocrd-processing-server
     image: ocrd/all:maximum
     environment:
-      MONGODB_USER: ${MONGODB_USER:-admin}
-      MONGODB_PASS: ${MONGODB_PASS:-admin}
-      RABBITMQ_USER: ${RABBITMQ_USER:-admin}
-      RABBITMQ_PASS: ${RABBITMQ_PASS:-admin}
+      - MONGODB_USER=${MONGODB_USER:-admin}
+      - MONGODB_PASS=${MONGODB_PASS:-admin}
+      - RABBITMQ_USER=${RABBITMQ_USER:-admin}
+      - RABBITMQ_PASS=${RABBITMQ_PASS:-admin}
+      - OCRD_NETWORK_SOCKETS_ROOT_DIR=/data/sockets
+      - OCRD_NETWORK_LOGS_ROOT_DIR=/data/logs
     command: |
       /bin/bash -c "echo -e \"
         internal_callback_url: http://ocrd-processing-server:8000
@@ -35,7 +37,6 @@ services:
     user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
-      - "$PWD/tmp:/tmp"
     ports:
       - ${OCRD_PS_PORT}:8000
 
@@ -43,8 +44,8 @@ services:
     container_name: ocrd-mongodb
     image: mongo:latest
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER:-admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASS:-admin}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASS:-admin}
     ports:
       - "27018:27017"
 
@@ -52,8 +53,8 @@ services:
     container_name: ocrd-rabbitmq
     image: rabbitmq:3-management
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-admin}
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-admin}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS:-admin}
     ports:
       - "5672:5672"
       - "15672:15672"

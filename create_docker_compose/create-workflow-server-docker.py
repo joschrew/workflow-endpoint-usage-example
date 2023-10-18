@@ -30,6 +30,10 @@ NOT_LIST = [
     "ocrd-cis-ocropy-rec",
 ]
 
+FRAKTUR_VOL_REPLACEMENT = (
+    '"$PWD/Fraktur.traineddata:/models/ocrd-tesserocr-recognize/Fraktur.traineddata"'
+)
+
 
 def write_docker_compose(dirname, data):
     base = Path(__file__).resolve().parent.parent
@@ -40,7 +44,8 @@ def write_docker_compose(dirname, data):
 
 def get_processors():
     r = requests.get("https://ocr-d.de/js/ocrd-all-tool.json")
-    return list(r.json().keys())
+    processors = r.json().keys()
+    return [x for x in processors if x not in NOT_LIST]
 
 
 def dc_head() -> str:
@@ -53,11 +58,17 @@ def dc_workers() -> str:
     processors = get_processors()
     with open(SERVICE_TEMPLATE, "r") as fin:
         template = fin.read()
-        # TODO: remove the line when needed core changes (pr 1046 etc.) are available in ocrd-all
-        template = template.replace("ocrd/all:maximum", IMAGE_NAME)
 
     for p in processors:
-        res += re.sub(r"{{[\s]*processor_name[\s]*}}", p, template)
+        template_for_processor = re.sub(r"{{[\s]*processor_name[\s]*}}", p, template)
+        if p == "ocrd-tesserocr-recognize":
+            template_for_processor = re.sub(
+                r"    volumes:",
+                f"    volumes:\n      - {FRAKTUR_VOL_REPLACEMENT}",
+                template_for_processor,
+            )
+        res += template_for_processor
+
     return res
 
 

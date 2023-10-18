@@ -10,4 +10,5 @@
     user: "${USER_ID}:${GROUP_ID}"
     volumes:
       - "$PWD/data:/data"
-      - "$PWD/tmp:/tmp"
+    environment:
+      - OCRD_NETWORK_LOGS_ROOT_DIR=/data/logs

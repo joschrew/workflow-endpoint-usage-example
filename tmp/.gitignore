@@ -1,6 +1,0 @@
-# tmp/ is used as a volume mount to provide the mets-server-socket to processing server and workers
-
-# Ignore everything in this directory
-*
-# Except this file
-!.gitignore
