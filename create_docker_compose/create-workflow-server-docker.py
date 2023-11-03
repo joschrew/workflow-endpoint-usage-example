@@ -12,7 +12,8 @@ import re
 
 DEST = "../docker-compose.yaml"
 DEST_ENV = "../.env"
-IMAGE_NAME = "ocrd_all_workflow"
+# Purpose is to change the image of containers for debugging. Left here as reminder if needed again
+IMAGE_NAME = ""
 
 
 DC_BASE_TEMPLATE = "docker-compose.template.yaml"
@@ -92,8 +93,11 @@ def main():
         print("Skipping writing to .env")
 
     with open(DEST, "w") as fout:
-        # TODO: remove the line when needed core changes (pr 1046 etc.) are available in ocrd-all
-        fout.write(dc_head().replace("ocrd/all:maximum", IMAGE_NAME))
+        header = dc_head()
+        if IMAGE_NAME:
+            header = dc_head().replace("ocrd/all:maximum", IMAGE_NAME)
+
+        fout.write(header)
         fout.write(dc_workers())
 
 

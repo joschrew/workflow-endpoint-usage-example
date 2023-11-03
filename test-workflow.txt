@@ -1,4 +1,4 @@
-cis-ocropy-binarize      -I OCR-D-IMG                 -O OCR-D-BINPAGE
+olena-binarize      -I OCR-D-IMG                 -O OCR-D-BINPAGE
 anybaseocr-crop          -I OCR-D-BINPAGE             -O OCR-D-SEG-PAGE-ANYOCR
 cis-ocropy-denoise       -I OCR-D-SEG-PAGE-ANYOCR     -O OCR-D-DENOISE-OCROPY      -P dpi 300              -P level-of-operation page            -P noise_maxsize 3.0
 tesserocr-segment-region -I OCR-D-DENOISE-OCROPY      -O OCR-D-SEG-BLOCK-TESSERACT -P padding 5            -P find_tables false                  -P dpi 300

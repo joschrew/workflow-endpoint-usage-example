@@ -7,7 +7,7 @@ networks:
 services:
   ocrd-processing-server:
     container_name: ocrd-processing-server
-    image: ocrd_all_workflow
+    image: ocrd/all:maximum
     environment:
       - MONGODB_USER=${MONGODB_USER:-admin}
       - MONGODB_PASS=${MONGODB_PASS:-admin}
