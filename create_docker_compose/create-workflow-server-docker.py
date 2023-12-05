@@ -59,6 +59,8 @@ def dc_workers() -> str:
     processors = get_processors()
     with open(SERVICE_TEMPLATE, "r") as fin:
         template = fin.read()
+    if IMAGE_NAME:
+        template = template.replace("ocrd/all:maximum", IMAGE_NAME)
 
     for p in processors:
         template_for_processor = re.sub(r"{{[\s]*processor_name[\s]*}}", p, template)
