@@ -19,10 +19,12 @@ IMAGE_NAME = ""
 DC_BASE_TEMPLATE = "docker-compose.template.yaml"
 SERVICE_TEMPLATE = "docker-compose.processor.template.yaml"
 
+PROCESSORS_CUSTOM = "use_processors.yaml"
+
 # processors from ocrd-all-tool-json to be skipped
 # they are present in the ocrd-tool-json but matching binaries are not available in ocrd_all. Maybe
 # they are misspelled in the ocrd-all-tool.json or no longer available in ocrd_all
-NOT_LIST = [
+BLOCK_LIST = [
     "ocrd-cor-asv-fst-process",
     "ocrd-pc-segmentation",
     "ocrd-ocropy-segment",
@@ -35,6 +37,11 @@ FRAKTUR_VOL_REPLACEMENT = (
     '"$PWD/Fraktur.traineddata:/models/ocrd-tesserocr-recognize/Fraktur.traineddata"'
 )
 
+ALLOW_LIST = []
+if Path(PROCESSORS_CUSTOM).exists():
+    with open(PROCESSORS_CUSTOM) as fin:
+        ALLOW_LIST = yaml.safe_load(fin)
+
 
 def write_docker_compose(dirname, data):
     base = Path(__file__).resolve().parent.parent
@@ -46,7 +53,12 @@ def write_docker_compose(dirname, data):
 def get_processors():
     r = requests.get("https://ocr-d.de/js/ocrd-all-tool.json")
     processors = r.json().keys()
-    return [x for x in processors if x not in NOT_LIST]
+    if len(ALLOW_LIST) > 0:
+        assert all(used_proc in processors for used_proc in ALLOW_LIST), \
+            f"Processor-name in {PROCESSORS_CUSTOM} not valid"
+        return ALLOW_LIST
+    else:
+        return [x for x in processors if x not in BLOCK_LIST]
 
 
 def dc_head() -> str:
@@ -69,6 +81,11 @@ def dc_workers() -> str:
                 r"    volumes:",
                 f"    volumes:\n      - {FRAKTUR_VOL_REPLACEMENT}",
                 template_for_processor,
+            )
+        # optionally replace `image: ...` with for example `build:\ncontext: path/Dockerfile`
+        if isinstance(processors, dict) and processors[p]:
+            template_for_processor = re.sub(
+                r"image: [\S]+[\n]", processors[p], template_for_processor
             )
         res += template_for_processor
 
