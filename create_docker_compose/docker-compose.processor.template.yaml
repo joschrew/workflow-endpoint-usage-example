@@ -9,6 +9,6 @@
       - ocrd-rabbitmq
     user: "${USER_ID}:${GROUP_ID}"
     volumes:
-      - "$PWD/data:/data"
+      - "${DATA_DIR_HOST}:/data"
     environment:
       - OCRD_NETWORK_LOGS_ROOT_DIR=/data/logs

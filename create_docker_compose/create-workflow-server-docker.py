@@ -105,6 +105,7 @@ def main():
             "RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@ocrd-rabbitmq:5672",
             "USER_ID=1000",
             "GROUP_ID=1000",
+            "DATA_DIR_HOST=${PWD}/data"
         ]
         with open(DEST_ENV, "w+") as fout:
             fout.write("\n".join(lines))

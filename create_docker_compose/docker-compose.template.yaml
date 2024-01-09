@@ -36,7 +36,7 @@ services:
         ocrd network processing-server -a 0.0.0.0:8000 /data/ocrd-processing-server-config.yaml"
     user: "${USER_ID}:${GROUP_ID}"
     volumes:
-      - "$PWD/data:/data"
+      - "${DATA_DIR_HOST}:/data"
     ports:
       - ${OCRD_PS_PORT}:8000
 
