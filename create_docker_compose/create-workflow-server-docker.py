@@ -79,12 +79,15 @@ def dc_workers() -> str:
 
     for p in processors:
         template_for_processor = re.sub(r"{{[\s]*processor_name[\s]*}}", p, template)
+
+        # add Fraktur models for tesseract recognize
         if p == "ocrd-tesserocr-recognize":
             template_for_processor = re.sub(
                 r"    volumes:",
                 f"    volumes:\n      - {FRAKTUR_VOL_REPLACEMENT}",
                 template_for_processor,
             )
+
         # optionally replace `image: ...` with for example `build:\ncontext: path/Dockerfile`
         if isinstance(processors, dict) and processors[p]:
             template_for_processor = re.sub(
@@ -97,6 +100,14 @@ def dc_workers() -> str:
             template_for_processor = re.sub(
                 r"    volumes:",
                 "    volumes:\n      - \"./my_ocrd_logging.conf:/etc/ocrd_logging.conf\"",
+                template_for_processor,
+            )
+
+        # optionally add environment Variable for tesseract Images:
+        if p.startswith("ocrd-tesserocr-"):
+            template_for_processor = re.sub(
+                r"    environment:",
+                "    environment:\n      - TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata",
                 template_for_processor,
             )
 
