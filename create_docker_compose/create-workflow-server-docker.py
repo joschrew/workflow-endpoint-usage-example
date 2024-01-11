@@ -21,6 +21,8 @@ SERVICE_TEMPLATE = "docker-compose.processor.template.yaml"
 
 PROCESSORS_CUSTOM = "use_processors.yaml"
 
+USE_CUSTOM_LOGGING_CONF = True
+
 # processors from ocrd-all-tool-json to be skipped
 # they are present in the ocrd-tool-json but matching binaries are not available in ocrd_all. Maybe
 # they are misspelled in the ocrd-all-tool.json or no longer available in ocrd_all
@@ -37,6 +39,7 @@ FRAKTUR_VOL_REPLACEMENT = (
     '"$PWD/Fraktur.traineddata:/models/ocrd-tesserocr-recognize/Fraktur.traineddata"'
 )
 
+# list read from PROCESSORS_CUSTOM to only create specific processors and not all
 ALLOW_LIST = []
 if Path(PROCESSORS_CUSTOM).exists():
     with open(PROCESSORS_CUSTOM) as fin:
@@ -87,6 +90,16 @@ def dc_workers() -> str:
             template_for_processor = re.sub(
                 r"image: [\S]+[\n]", processors[p], template_for_processor
             )
+
+        # optionally set custom logging conf through volume mount
+        if USE_CUSTOM_LOGGING_CONF:
+            assert Path("../my_ocrd_logging.conf").exists(), "custom logging conf not found"
+            template_for_processor = re.sub(
+                r"    volumes:",
+                "    volumes:\n      - \"./my_ocrd_logging.conf:/etc/ocrd_logging.conf\"",
+                template_for_processor,
+            )
+
         res += template_for_processor
 
     return res
