@@ -1,0 +1,18 @@
+
+  {{ processor_name }}:
+    image: ocrd/all:maximum
+    container_name: {{ processor_name }}
+    depends_on:
+      ocrd_network_processing_server:
+        condition: service_healthy
+    networks:
+      - ${DOCKER_OCRD_NETWORK_NAME}
+    environment:
+      - OCRD_NETWORK_LOGS_ROOT_DIR=/ocrd-data/ocrd_network_logs
+      - OCRD_LOGGING_DEBUG=true
+    volumes:
+      - ${OCRD_NETWORK_LOGS_ROOT}:/ocrd-data/ocrd_network_logs
+      - ${OCRD_NETWORK_SOCKETS_ROOT}:/ocrd-data/ocrd_network_sockets
+      - "ocrd-test-workspace:/data"
+    command: {{ processor_name}} worker --database ${MONGODB_URL} --queue ${RABBITMQ_URL}
+

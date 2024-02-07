@@ -1,0 +1,12 @@
+volumes:
+  ocrd-test-workspace: {}
+
+services:
+  ocrd_network_processing_server:
+    volumes:
+      - "ocrd-test-workspace:/data"
+
+  ocrd_network_core_test:
+    image: my-ocrd-core-test
+    volumes:
+      - "${PWD}/tests/network/test-workflow.txt:/ocrd-data/assets/ocrd_all-test-workflow.txt"
