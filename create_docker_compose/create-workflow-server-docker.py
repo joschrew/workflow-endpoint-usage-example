@@ -1,36 +1,18 @@
 #!/usr/bin/env python
 """ Script to create the docker-compose file for running the conainers for the workflow-endpoint
 
-For the example run the processing server is started via CMD. It needs mongoDB, rabbitMQ and the
-workers. These are run with the docker-compose.yaml created with this script
 """
 
 import requests
 from pathlib import Path
 import yaml
 import re
-import sys
+import click
 
 DEST_ENV = "../.env"
 # Purpose was to change the image of containers for debugging. Left here as reminder if needed again
 IMAGE_NAME = ""
 
-CONFIG_PATH = "configs/default.yaml" if len(sys.argv) == 1 else sys.argv[1]
-assert Path(CONFIG_PATH).exists(), f"specified config file not existing: '{sys.argv[1]}'"
-
-with open(CONFIG_PATH) as fin:
-    config = yaml.safe_load(fin)
-
-assert isinstance(config, dict), (
-    "error reading config-file to dict. Expecting dict but is "
-    f"{type(config)}"
-)
-DEST = config["dest"]
-BASE_TEMPLATE = config["dc_base_template"]
-SERVICE_TEMPLATE = config["dc_service_template"]
-USE_CUSTOM_LOGGING_CONF = config.get("use_custom_logging_config", False)
-TESSERACT_VOL_REPLACEMENT = config.get("tesseract_vol_replacement", None)
-TESSDATA_PREFIX = config.get("tessdata_prefix", None)
 
 # processors from ocrd-all-tool-json to be skipped
 # they are present in the ocrd-tool-json but matching binaries are not available in ocrd_all. Maybe
@@ -45,8 +27,36 @@ BLOCK_LIST = [
     "ocrd-cis-ocropy-rec",
 ]
 
-# If at least one processor specified, don't create all workers just these ones
-ALLOW_LIST = config["processors"]
+
+class Config:
+    def __init__(self, config_path=None):
+        # TODO: automatically convert the yaml to a class and skip most of this stuff
+        if not config_path:
+            self.config_path = "configs/default.yaml"
+        else:
+            self.config_path = config_path
+        assert Path(self.config_path).exists(), (
+            f"specified config file not existing: '{self.config_path}'"
+        )
+
+        with open(self.config_path) as fin:
+            config = yaml.safe_load(fin)
+
+        assert isinstance(config, dict), (
+            "error reading config-file to dict. Expecting dict but is "
+            f"{type(config)}"
+        )
+        self.dest = config["dest"]
+        self.dest_env = config.get("dest_env", DEST_ENV)
+        self.base_template = config["dc_base_template"]
+        self.service_template = config["dc_service_template"]
+        self.use_custom_logging_conf = config.get("use_custom_logging_config", False)
+        self.vol_replacement = config.get("vol_replacement", None)
+        self.tessdata_prefix = config.get("tessdata_prefix", None)
+        # If at least one processor specified, don't create all workers just these ones
+        self.allow_list = config["processors"]
+        self.envs = config.get("envs", [])
+        self.allways_write_env = config.get("allways_write_env", False)
 
 
 def write_docker_compose(dirname, data):
@@ -56,30 +66,30 @@ def write_docker_compose(dirname, data):
         yaml.dump(data, fout, default_style=False)
 
 
-def get_processors():
+def get_processors(config: Config):
     r = requests.get("https://ocr-d.de/js/ocrd-all-tool.json")
     processors = r.json().keys()
-    if len(ALLOW_LIST) > 0:
-        assert all(used_proc in processors for used_proc in ALLOW_LIST), (
+    if len(config.allow_list) > 0:
+        assert all(used_proc in processors for used_proc in config.allow_list), (
             f"Processor-name in config (key: 'processors') not valid. "
-            f"Invalid: '{[p for p in ALLOW_LIST if not p in processors]}'"
+            f"Invalid: '{[p for p in config.allow_list if not p in processors]}'"
         )
-        return ALLOW_LIST
+        return config.allow_list
     else:
         res = [x for x in processors if x not in BLOCK_LIST]
         res.sort()
         return res
 
 
-def dc_head() -> str:
-    with open(BASE_TEMPLATE, "r") as fin:
+def dc_head(config: Config) -> str:
+    with open(config.base_template, "r") as fin:
         return fin.read()
 
 
-def dc_workers() -> str:
+def dc_workers(config: Config) -> str:
     res = ""
-    processors = get_processors()
-    with open(SERVICE_TEMPLATE, "r") as fin:
+    processors = get_processors(config)
+    with open(config.service_template, "r") as fin:
         template = fin.read()
     if IMAGE_NAME:
         template = template.replace("ocrd/all:maximum", IMAGE_NAME)
@@ -87,12 +97,11 @@ def dc_workers() -> str:
     for p in processors:
         template_for_processor = re.sub(r"{{[\s]*processor_name[\s]*}}", p, template)
 
-        # add Fraktur models for tesseract recognize
-        if TESSERACT_VOL_REPLACEMENT \
-                and p in ["ocrd-tesserocr-recognize", "ocrd-tesserocr-segment-region"]:
+        # add volume mounts for some containers
+        if config.vol_replacement and p in config.vol_replacement:
             template_for_processor = re.sub(
                 r"    volumes:",
-                f"    {TESSERACT_VOL_REPLACEMENT}",
+                f"    {config.vol_replacement[p]}",
                 template_for_processor,
             )
 
@@ -102,8 +111,9 @@ def dc_workers() -> str:
                 r"image: [\S]+[\n]", processors[p], template_for_processor
             )
 
+        # TODO: this could be removed: logging-config should be mounted to /data for all processors
         # optionally set custom logging conf through volume mount
-        if USE_CUSTOM_LOGGING_CONF and p.find("tesser") > -1:
+        if config.use_custom_logging_conf is True and p.find("tesser") > -1:
             assert Path("../my_ocrd_logging.conf").exists(), "custom logging conf not found"
             template_for_processor = re.sub(
                 r"    volumes:",
@@ -112,10 +122,10 @@ def dc_workers() -> str:
             )
 
         # optionally add environment Variable for tesseract Images:
-        if p.startswith("ocrd-tesserocr-") and TESSDATA_PREFIX:
+        if p.startswith("ocrd-tesserocr-") and config.tessdata_prefix:
             template_for_processor = re.sub(
                 r"    environment:",
-                f"    environment:\n      - TESSDATA_PREFIX={TESSDATA_PREFIX}",
+                f"    environment:\n      - TESSDATA_PREFIX={config.tessdata_prefix}",
                 template_for_processor,
             )
 
@@ -124,8 +134,11 @@ def dc_workers() -> str:
     return res
 
 
-def main():
-    if not Path(DEST_ENV).exists():
+@click.command()
+@click.argument("config_path")
+def main(config_path):
+    config = Config(config_path)
+    if config.allways_write_env or not Path(config.dest_env).exists():
         lines = [
             "OCRD_PS_PORT=8000",
             "OCRD_PS_MTU=1300",
@@ -137,20 +150,31 @@ def main():
             "RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@ocrd-rabbitmq:5672",
             "USER_ID=1000",
             "GROUP_ID=1000",
-            "DATA_DIR_HOST=${PWD}/data"
+            "DATA_DIR_HOST=${PWD}/data",
         ]
-        with open(DEST_ENV, "w+") as fout:
+        # overwrite default envs
+        for env in config.envs:
+            varname = env.split("=")[0]
+            r = re.compile(f"{varname}=.*")
+            matches = list(filter(r.match, lines))
+            assert not len(matches) > 1, "error replacing env. duplicate env or programmer mistake"
+            if len(matches) == 1:
+                lines[lines.index(matches[0])] = env
+            else:
+                lines.append(env)
+
+        with open(config.dest_env, "w+") as fout:
             fout.write("\n".join(lines))
     else:
         print("Skipping writing to .env")
 
-    with open(DEST, "w") as fout:
-        header = dc_head()
+    with open(config.dest, "w") as fout:
+        header = dc_head(config)
         if IMAGE_NAME:
-            header = dc_head().replace("ocrd/all:maximum", IMAGE_NAME)
+            header = dc_head(config).replace("ocrd/all:maximum", IMAGE_NAME)
 
         fout.write(header)
-        fout.write(dc_workers())
+        fout.write(dc_workers(config))
 
 
 if __name__ == "__main__":

@@ -1,12 +1,19 @@
-dest: ../docker-compose2.yaml
+dest: ../docker-compose.yaml
 dc_base_template: templates/docker-compose.template.yaml
 dc_service_template: templates/docker-compose.processor.template.yaml
 processors: {}
 use_custom_logging_config: true
-tesseract_vol_replacement: |2
-      volumes:
-        - "$PWD/Fraktur.traineddata:/${TESSDATA_PREFIX}/Fraktur.traineddata"
-        - "$PWD/eng.traineddata:/${TESSDATA_PREFIX}/eng.traineddata"
-        - "$PWD/equ.traineddata:/${TESSDATA_PREFIX}/equ.traineddata"
-        - "$PWD/osd.traineddata:/${TESSDATA_PREFIX}/osd.traineddata"
+vol_replacement:
+    ocrd-tesserocr-recognize: |4-
+        volumes:
+              - "$PWD/Fraktur.traineddata:/${TESSDATA_PREFIX}/Fraktur.traineddata"
+              - "$PWD/eng.traineddata:/${TESSDATA_PREFIX}/eng.traineddata"
+              - "$PWD/equ.traineddata:/${TESSDATA_PREFIX}/equ.traineddata"
+              - "$PWD/osd.traineddata:/${TESSDATA_PREFIX}/osd.traineddata"
+    ocrd-tesserocr-segment: |4-
+        volumes:
+              - "$PWD/Fraktur.traineddata:/${TESSDATA_PREFIX}/Fraktur.traineddata"
+              - "$PWD/eng.traineddata:/${TESSDATA_PREFIX}/eng.traineddata"
+              - "$PWD/equ.traineddata:/${TESSDATA_PREFIX}/equ.traineddata"
+              - "$PWD/osd.traineddata:/${TESSDATA_PREFIX}/osd.traineddata"
 tessdata_prefix: /usr/share/tesseract-ocr/4.00/tessdata

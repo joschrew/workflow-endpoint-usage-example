@@ -1,0 +1,15 @@
+dest: /home/jschrew/ocrd/gwdg-ocrd-network-vms/docker-compose-1.yaml
+dest_env: /home/jschrew/ocrd/gwdg-ocrd-network-vms/env
+dc_base_template: templates/docker-compose.template.gwdg-1.yaml
+dc_service_template: templates/docker-compose.processor.template.gwdg-1.yaml
+processors:
+    ocrd-kraken-recognize:
+    ocrd-cis-ocropy-binarize:
+    ocrd-tesserocr-segment:
+envs:
+    - DATA_DIR_HOST=/home/cloud/ocrd-data
+vol_replacement:
+    ocrd-kraken-recognize: |6-
+          volumes:
+                - "$PWD/en_best.mlmodel:/models/ocrd-kraken-recognize/en_best.mlmodel"
+allways_write_env: true
