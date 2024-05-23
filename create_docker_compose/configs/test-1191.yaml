@@ -1,0 +1,10 @@
+dest: /home/jschrew/mygits/github/core/docker-compose.yaml
+dest_env: /home/jschrew/mygits/github/core/.env
+dc_base_template: templates/docker-compose.template.test-1191.yaml
+dc_service_template: templates/docker-compose.processor.template.test-1191.yaml
+processors:
+    ocrd-olena-binarize: "image: loeschmich-mm-olena-test\n"
+    ocrd-segment-repair: "image: loeschmich-mm-segment-test\n"
+envs:
+    - DATA_DIR_HOST=/data
+allways_write_env: true
