@@ -1,0 +1,10 @@
+dest: /home/jschrew/loeschmich/docker-compose.yaml
+dest_env: /home/jschrew/loeschmich/.env
+dc_base_template: templates/docker-compose.template.test-tcp.yaml
+dc_service_template: templates/docker-compose.processor.template.test-tcp.yaml
+processors:
+    ocrd-tesserocr-binarize: "image: tesserocr-tcp\n"
+    ocrd-tesserocr-recognize: "image: tesserocr-tcp\n"
+envs:
+    - DATA_DIR_HOST=/data
+allways_write_env: true

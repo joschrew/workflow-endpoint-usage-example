@@ -1,0 +1,60 @@
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: ${OCRD_PS_MTU}
+
+services:
+  ocrd-processing-server:
+    container_name: ocrd-processing-server
+    image: core-tcp
+    environment:
+      - MONGODB_USER=${MONGODB_USER:-admin}
+      - MONGODB_PASS=${MONGODB_PASS:-admin}
+      - RABBITMQ_USER=${RABBITMQ_USER:-admin}
+      - RABBITMQ_PASS=${RABBITMQ_PASS:-admin}
+      - OCRD_NETWORK_SOCKETS_ROOT_DIR=${SOCKETS_DIR:-/data/sockets}
+      - OCRD_NETWORK_LOGS_ROOT_DIR=${LOGS_DIR:-/data/logs}
+    command: |
+      /bin/bash -c "echo -e \"
+        internal_callback_url: http://ocrd-processing-server:8000
+        process_queue:
+          address: ocrd-rabbitmq
+          port: 5672
+          skip_deployment: true
+          credentials:
+            username: ${RABBITMQ_USER}
+            password: ${RABBITMQ_PASS}
+        database:
+          address: ocrd-mongodb
+          port: 27017
+          skip_deployment: true
+          credentials:
+            username: ${MONGODB_USER}
+            password: ${MONGODB_PASS}
+        hosts: []\" > /data/ocrd-processing-server-config.yaml && \
+        ocrd network processing-server -a 0.0.0.0:8000 /data/ocrd-processing-server-config.yaml"
+    user: "${USER_ID}:${GROUP_ID}"
+    volumes:
+      - "${DATA_DIR_HOST}:/data"
+    ports:
+      - ${OCRD_PS_PORT}:8000
+
+  ocrd-mongodb:
+    container_name: ocrd-mongodb
+    image: mongo:latest
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_USER:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_PASS:-admin}
+    ports:
+      - "27018:27017"
+
+  ocrd-rabbitmq:
+    container_name: ocrd-rabbitmq
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-admin}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS:-admin}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
