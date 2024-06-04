@@ -12,4 +12,4 @@ vol_replacement:
     ocrd-kraken-recognize: |6-
           volumes:
                 - "$PWD/en_best.mlmodel:/models/ocrd-kraken-recognize/en_best.mlmodel"
-allways_write_env: true
+always_write_env: true

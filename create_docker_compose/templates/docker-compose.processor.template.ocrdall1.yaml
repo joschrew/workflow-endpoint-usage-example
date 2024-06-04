@@ -1,9 +1,10 @@
 
   {{ processor_name }}:
-    image: tesserocr-tcp
+    image: ocrd/all:maximum
     container_name: {{ processor_name }}
     command: {{ processor_name}} worker --database $MONGODB_URL --queue $RABBITMQ_URL
     depends_on:
+      - ocrd-processing-server
       - ocrd-mongodb
       - ocrd-rabbitmq
     user: "${USER_ID}:${GROUP_ID}"

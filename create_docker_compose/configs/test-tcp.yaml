@@ -5,6 +5,7 @@ dc_service_template: templates/docker-compose.processor.template.test-tcp.yaml
 processors:
     ocrd-tesserocr-binarize: "image: tesserocr-tcp\n"
     ocrd-tesserocr-recognize: "image: tesserocr-tcp\n"
+    ocrd-dummy: "image: core-tcp\n"
 envs:
     - DATA_DIR_HOST=/data
-allways_write_env: true
+always_write_env: true

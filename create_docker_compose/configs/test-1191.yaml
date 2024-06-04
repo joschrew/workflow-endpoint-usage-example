@@ -7,4 +7,4 @@ processors:
     ocrd-segment-repair: "image: loeschmich-mm-segment-test\n"
 envs:
     - DATA_DIR_HOST=/data
-allways_write_env: true
+always_write_env: true

@@ -11,6 +11,5 @@ processors:
     ocrd-tesserocr-segment-region: "build:\n      context: ../../../ocrd_tesserocr\n"
     ocrd-tesserocr-recognize: "build:\n      context: ../../../ocrd_tesserocr\n"
     ocrd-segment-repair: "build:\n      context: ../../../ocrd_segment\n"
-use_custom_logging_config: false
 tesseract_vol_replacement: []
 tessdata_prefix: /usr/local/share/tessdata

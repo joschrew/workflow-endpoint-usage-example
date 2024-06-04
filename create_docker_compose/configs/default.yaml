@@ -2,7 +2,6 @@ dest: ../docker-compose.yaml
 dc_base_template: templates/docker-compose.template.yaml
 dc_service_template: templates/docker-compose.processor.template.yaml
 processors: {}
-use_custom_logging_config: true
 vol_replacement:
     ocrd-tesserocr-recognize: |4-
         volumes:

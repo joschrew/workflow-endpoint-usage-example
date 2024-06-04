@@ -1,0 +1,21 @@
+dest: /home/jschrew/ocrd/selbstversuch-ocrd/docker-compose.yaml
+dest_env: /home/jschrew/ocrd/selbstversuch-ocrd/env
+dc_base_template: templates/docker-compose.template.ocrdall1.yaml
+dc_service_template: templates/docker-compose.processor.template.ocrdall1.yaml
+processors:
+    ocrd-olena-binarize: "image: ocrd/all:maximum\n"
+    ocrd-anybaseocr-crop: "image: ocrd/all:maximum\n"
+    ocrd-cis-ocropy-denoise: "image: ocrd/all:maximum\n"
+    ocrd-cis-ocropy-clip: "image: ocrd/all:maximum\n"
+    ocrd-cis-ocropy-segment: "image: ocrd/all:maximum\n"
+    ocrd-cis-ocropy-dewarp: "image: ocrd/all:maximum\n"
+    ocrd-tesserocr-segment-region: "image: ocrd/all:maximum\n"
+    ocrd-tesserocr-recognize: "image: ocrd/all:maximum\n"
+    ocrd-segment-repair: "image: ocrd/all:maximum\n"
+    ocrd-tesserocr-recognize: "image: ocrd/all:maximum\n"
+always_write_env: true
+vol_replacement:
+    ocrd-tesserocr-recognize: |4-
+        volumes:
+              - "$PWD/Fraktur.traineddata:/usr/local/share/tessdata/Fraktur.traineddata"
+tessdata_prefix: /usr/local/share/tessdata
