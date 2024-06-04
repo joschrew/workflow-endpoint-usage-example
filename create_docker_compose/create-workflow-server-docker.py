@@ -50,13 +50,12 @@ class Config:
         self.dest_env = config.get("dest_env", DEST_ENV)
         self.base_template = config["dc_base_template"]
         self.service_template = config["dc_service_template"]
-        self.use_custom_logging_conf = config.get("use_custom_logging_config", False)
         self.vol_replacement = config.get("vol_replacement", None)
         self.tessdata_prefix = config.get("tessdata_prefix", None)
         # If at least one processor specified, don't create all workers just these ones
         self.allow_list = config["processors"]
         self.envs = config.get("envs", [])
-        self.allways_write_env = config.get("allways_write_env", False)
+        self.always_write_env = config.get("always_write_env", False)
 
 
 def write_docker_compose(dirname, data):
@@ -111,16 +110,6 @@ def dc_workers(config: Config) -> str:
                 r"image: [\S]+[\n]", processors[p], template_for_processor
             )
 
-        # TODO: this could be removed: logging-config should be mounted to /data for all processors
-        # optionally set custom logging conf through volume mount
-        if config.use_custom_logging_conf is True and p.find("tesser") > -1:
-            assert Path("../my_ocrd_logging.conf").exists(), "custom logging conf not found"
-            template_for_processor = re.sub(
-                r"    volumes:",
-                '    volumes:\n      - "./my_ocrd_logging.conf:/root/ocrd_logging.conf"',
-                template_for_processor,
-            )
-
         # optionally add environment Variable for tesseract Images:
         if p.startswith("ocrd-tesserocr-") and config.tessdata_prefix:
             template_for_processor = re.sub(
@@ -138,7 +127,7 @@ def dc_workers(config: Config) -> str:
 @click.argument("config_path")
 def main(config_path):
     config = Config(config_path)
-    if config.allways_write_env or not Path(config.dest_env).exists():
+    if config.always_write_env or not Path(config.dest_env).exists():
         lines = [
             "OCRD_PS_PORT=8000",
             "OCRD_PS_MTU=1300",
