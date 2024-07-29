@@ -1,0 +1,19 @@
+dest: /home/jschrew/mygits/ansible/files/ocrd/network-setup/docker-compose.ocrd2.yaml
+dest_env: /home/jschrew/mygits/ansible/files/ocrd/network-setup/ocrd2.env
+dc_base_template: templates/docker-compose.template.ocrd2.yaml
+dc_service_template: templates/docker-compose.processor.template.ocrd2.yaml
+processors:
+    ocrd-cis-ocropy-binarize: "image: ocrd/all:maximum\n"
+    ocrd-cis-ocropy-denoise: "image: ocrd/all:maximum\n"
+    ocrd-cis-ocropy-deskew: "image: ocrd/all:maximum\n"
+    ocrd-cis-ocropy-clip: "image: ocrd/all:maximum\n"
+    ocrd-cis-ocropy-segment: "image: ocrd/all:maximum\n"
+    ocrd-cis-ocropy-dewarp: "image: ocrd/all:maximum\n"
+    ocrd-anybaseocr-crop: "image: ocrd/all:maximum\n"
+    ocrd-segment-repair: "image: ocrd/all:maximum\n"
+    ocrd-dummy: "image: ocrd/all:maximum\n"
+envs:
+    - DATA_DIR_HOST=/data
+    - MONGODB_URL=mongodb://${MONGODB_USER}:${MONGODB_PASS}@10.254.1.8:27018
+    - RABBITMQ_URL=amqp://${RABBITMQ_USER}:${RABBITMQ_PASS}@10.254.1.8:5672
+always_write_env: true

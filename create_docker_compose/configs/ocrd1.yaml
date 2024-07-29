@@ -1,0 +1,22 @@
+dest: /home/jschrew/mygits/ansible/files/ocrd/network-setup/docker-compose.ocrd1.yaml
+dest_env: /home/jschrew/mygits/ansible/files/ocrd/network-setup/ocrd1.env
+dc_base_template: templates/docker-compose.template.ocrd1.yaml
+dc_service_template: templates/docker-compose.processor.template.ocrd1.yaml
+processors:
+    ocrd-tesserocr-recognize: "image: ocrd/all:minimum\n"
+    ocrd-tesserocr-segment-region: "image: ocrd/all:minimum\n"
+    ocrd-fileformat-transform: "image: ocrd/all:minimum\n"
+envs:
+    - DATA_DIR_HOST=/data
+always_write_env: true
+vol_replacement:
+    ocrd-tesserocr-recognize: |4-
+        volumes:
+              - "$PWD/Fraktur.traineddata:/usr/local/share/tessdata/Fraktur.traineddata"
+    ocrd-tesserocr-segment-region: |4-
+        volumes:
+              - "$PWD/Fraktur.traineddata:/usr/local/share/tessdata/Fraktur.traineddata"
+    ocrd-fileformat-transform: |4-
+        volumes:
+              - "$PWD/my_ocrd_logging.conf:/ocrd_logging.conf"
+tessdata_prefix: /usr/local/share/tessdata

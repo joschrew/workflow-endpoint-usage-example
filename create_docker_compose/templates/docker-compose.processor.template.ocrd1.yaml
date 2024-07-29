@@ -1,0 +1,13 @@
+
+  {{ processor_name }}:
+    image: ocrd/all:latest
+    container_name: {{ processor_name }}
+    command: {{ processor_name}} worker --database $MONGODB_URL --queue $RABBITMQ_URL
+    depends_on:
+      - ocrd-mongodb
+      - ocrd-rabbitmq
+    user: "${USER_ID}:${GROUP_ID}"
+    volumes:
+      - "${DATA_DIR_HOST}:/data"
+    environment:
+      - OCRD_NETWORK_LOGS_ROOT_DIR=${LOGS_DIR:-/data/logs}

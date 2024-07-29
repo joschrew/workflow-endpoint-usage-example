@@ -1,0 +1,8 @@
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: ${OCRD_PS_MTU}
+
+
+services:
